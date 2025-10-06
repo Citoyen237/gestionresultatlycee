@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block "title" %}
+classes
+{% endblock %}
+
+{% block 'content' %}
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Classes</h1>
+</div>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Supprimer la classe : {{classe}}</h6>
+    </div>
+    <div class="card-body">
+        <p>Êtes-vous sûr de vouloir supprimer la classe "{{ classe.code }}" ?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Confirmer</button>
+            <a href="{% url 'list_classe' %}" class="btn btn-danger">Annuler</a>
+        </form>
+    </div>
+</div>
+
+<!-- Modal -->
+{% endblock %}
