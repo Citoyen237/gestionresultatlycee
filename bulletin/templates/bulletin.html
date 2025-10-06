@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulletin de Notes</title>
+    <style>
+        @media print {
+            body { margin: 0; padding: 10px; }
+            .bulletin { border: 2px solid #000; }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+
+        .bulletin {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border: 3px solid #000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 3px solid #000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #003366, #0066cc);
+            border: 2px solid #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header-text {
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .header-text strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .header-right {
+            text-align: right;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .header-right strong {
+            font-size: 13px;
+        }
+
+        .logo-right {
+            width: 50px;
+            height: 50px;
+            margin-left: 10px;
+        }
+
+        .title-bar {
+            background: #000;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .info-section {
+            display: flex;
+            border-bottom: 2px solid #000;
+        }
+
+        .info-left {
+            width: 140px;
+            border-right: 2px solid #000;
+            padding: 15px;
+        }
+
+        .qr-placeholder {
+            width: 100px;
+            height: 100px;
+            background: repeating-linear-gradient(45deg, #ddd, #ddd 5px, #fff 5px, #fff 10px);
+            border: 2px solid #000;
+            margin-bottom: 15px;
+        }
+
+        .info-left-text {
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .info-right {
+            flex: 1;
+            padding: 15px 20px;
+        }
+
+        .student-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #003366;
+        }
+
+        .student-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            font-size: 11px;
+        }
+
+        .detail-item {
+            padding: 5px;
+            background: #f9f9f9;
+            border-left: 3px solid #0066cc;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #003366;
+        }
+
+        .notes-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        .notes-table th {
+            background: linear-gradient(to bottom, #e0e0e0, #c0c0c0);
+            border: 1px solid #000;
+            padding: 8px 5px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .notes-table td {
+            border: 1px solid #000;
+            padding: 6px 8px;
+        }
+
+        .notes-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .matiere-col {
+            font-weight: 500;
+        }
+
+        .moy-col, .coef-col, .mcoef-col, .rang-col {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .section-row {
+            background: #000 !important;
+            color: white;
+            font-weight: bold;
+        }
+
+        .section-row td {
+            padding: 8px;
+        }
+
+        .totaux-row {
+            background: #d0d0d0;
+            font-weight: bold;
+        }
+
+        .appreciation-col {
+            text-align: center;
+            font-style: italic;
+        }
+
+        .appreciation-faible { color: #cc0000; }
+        .appreciation-insuffisant { color: #ff6600; }
+        .appreciation-passable { color: #ff9900; }
+        .appreciation-assezbien { color: #0066cc; }
+        .appreciation-bien { color: #006600; }
+        .appreciation-tresfaible { color: #990000; font-weight: bold; }
+
+        .bottom-section {
+            padding: 15px 20px;
+        }
+
+        .absences-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f5f5f5;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            font-size: 11px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            border: 2px solid #000;
+            padding: 12px;
+            background: #fafafa;
+        }
+
+        .stat-title {
+            background: #000;
+            color: white;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 11px;
+            margin: -12px -12px 10px -12px;
+        }
+
+        .stat-content {
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        .checkbox {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #000;
+            margin-right: 8px;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .checkbox.checked {
+            background: #0066cc;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            top: -2px;
+            left: 2px;
+        }
+
+        .conseil-box {
+            border: 2px solid #000;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .conseil-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 15px;
+            color: #003366;
+        }
+
+        .conseil-text {
+            text-align: center;
+            font-style: italic;
+            padding: 30px;
+            background: #f9f9f9;
+            border: 1px dashed #999;
+            margin-bottom: 20px;
+        }
+
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            border-top: 2px solid #000;
+            padding-top: 15px;
+        }
+
+        .signature-block {
+            text-align: center;
+            font-size: 10px;
+            width: 45%;
+        }
+
+        .signature-block strong {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .visa-box {
+            border: 1px solid #000;
+            padding: 30px 10px 10px 10px;
+            margin-top: 10px;
+        }
+
+        .footer {
+            background: #f0f0f0;
+            padding: 12px;
+            text-align: center;
+            font-size: 9px;
+            line-height: 1.6;
+            border-top: 2px solid #000;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="bulletin">
+        <!-- En-tête -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">MEFPA</div>
+                <div class="header-text">
+                    <strong>RÉPUBLIQUE DE CÔTE D'IVOIRE</strong>
+                    MINISTÈRE DE L'ENSEIGNEMENT TECHNIQUE ET DE LA<br>
+                    FORMATION PROFESSIONNELLE ET DE L'APPRENTISSAGE<br>
+                    <strong>DIRECTION RÉGIONALE SAN-PEDRO</strong>
+                </div>
+            </div>
+            <div class="header-right">
+                <strong>LYCÉE PROFESSIONNEL DE SAN-PEDRO</strong><br>
+                Code: <strong>058877</strong><br>
+                Statut: <strong>Public</strong>
+            </div>
+        </div>
+
+        <!-- Barre de titre -->
+        <div class="title-bar">
+            <span>BULLETIN DE NOTES: Semestre 1</span>
+            <span>Année Scolaire: 2023-2024</span>
+        </div>
+
+        <!-- Section informations élève -->
+        <div class="info-section">
+            <div class="info-left">
+                <div class="qr-placeholder"></div>
+                <div class="info-left-text">
+                    <strong>Filière:</strong> 1BT MÉCANIQUE AUTOMOBILE<br>
+                    <strong>Classe:</strong> 1BT/MA<br>
+                    <strong>Effectif:</strong> 52
+                </div>
+            </div>
+            <div class="info-right">
+                <div class="student-name">GNOU GUELA STEPHANE</div>
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 15px; color: #cc0000;">
+                    Matricule: 1757325IC
+                </div>
+                <div class="student-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Régime:</span> Interne: Non
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Sexe:</span> Masculin
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Nationalité:</span> Ivoirienne
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Affecté(e):</span> Redoublant(e): Non
+                    </div>
+                    <div class="detail-item" style="grid-column: 2 / 4;">
+                        <span class="detail-label">Né(e) le:</span> 05/09/2007 à DUEKOUE
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableau des notes -->
+        <table class="notes-table">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Matière</th>
+                    <th style="width: 8%;">Moy</th>
+                    <th style="width: 7%;">Coef.</th>
+                    <th style="width: 10%;">M*Coeff.</th>
+                    <th style="width: 8%;">Rang</th>
+                    <th style="width: 25%;">Professeurs</th>
+                    <th style="width: 22%;">Appréciation/Émargement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="matiere-col">Mathématiques</td>
+                    <td class="moy-col">6</td>
+                    <td class="coef-col">3</td>
+                    <td class="mcoef-col">18</td>
+                    <td class="rang-col">34ème</td>
+                    <td>M. LINGANI ABOUBACAR-ROLLAND</td>
+                    <td class="appreciation-col appreciation-faible">Faible</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Technique d'expression</td>
+                    <td class="moy-col">8.4</td>
+                    <td class="coef-col">2</td>
+                    <td class="mcoef-col">17.2</td>
+                    <td class="rang-col">33ex</td>
+                    <td>Mme. ADINGRA MANZAN-LAURE</td>
+                    <td class="appreciation-col appreciation-insuffisant">Insuffisant</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Sciences Physiques</td>
+                    <td class="moy-col">9</td>
+                    <td class="coef-col">2</td>
+                    <td class="mcoef-col">18</td>
+                    <td class="rang-col">35ex</td>
+                    <td>M. KOUASSI KOUAKOU FELIX</td>
+                    <td class="appreciation-col appreciation-insuffisant">Insuffisant</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Anglais</td>
+                    <td class="moy-col">13.33</td>
+                    <td class="coef-col">2</td>
+                    <td class="mcoef-col">26.66</td>
+                    <td class="rang-col">16ex</td>
+                    <td>Mme. KONE MASSITA</td>
+                    <td class="appreciation-col appreciation-assezbien">Assez Bien</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Civec</td>
+                    <td class="moy-col">11.16</td>
+                    <td class="coef-col">1</td>
+                    <td class="mcoef-col">11.16</td>
+                    <td class="rang-col">17ème</td>
+                    <td>M. KOUASSI KONAN ELISABETH</td>
+                    <td class="appreciation-col appreciation-passable">Passable</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Eps</td>
+                    <td class="moy-col">13.33</td>
+                    <td class="coef-col">1</td>
+                    <td class="mcoef-col">13.33</td>
+                    <td class="rang-col">13ex</td>
+                    <td>M. YAO KOUASSI CHARLES NODIER</td>
+                    <td class="appreciation-col appreciation-assezbien">Assez Bien</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Edhc</td>
+                    <td class="moy-col">8.43</td>
+                    <td class="coef-col">2</td>
+                    <td class="mcoef-col">17.66</td>
+                    <td class="rang-col">36ème</td>
+                    <td>M. DIARRASSOUBA MOUSSA NIADAN</td>
+                    <td class="appreciation-col appreciation-insuffisant">Insuffisant</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Conduite</td>
+                    <td class="moy-col">14</td>
+                    <td class="coef-col">1</td>
+                    <td class="mcoef-col">14</td>
+                    <td class="rang-col">3ex</td>
+                    <td>Mme. COULIBALY NOTIE MADJOU</td>
+                    <td class="appreciation-col appreciation-bien">Bien</td>
+                </tr>
+                <tr class="section-row">
+                    <td>UNITÉ ENSEIGNEMENT GÉNÉRAL</td>
+                    <td>9.72</td>
+                    <td>14</td>
+                    <td>136.01</td>
+                    <td>27ème</td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Tp Électricité</td>
+                    <td class="moy-col">13</td>
+                    <td class="coef-col">4</td>
+                    <td class="mcoef-col">52</td>
+                    <td class="rang-col">25ex</td>
+                    <td>M. KOUABENA ADINGRA</td>
+                    <td class="appreciation-col appreciation-assezbien">Assez Bien</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Tp Moteur</td>
+                    <td class="moy-col">13</td>
+                    <td class="coef-col">4</td>
+                    <td class="mcoef-col">78</td>
+                    <td class="rang-col">1er</td>
+                    <td>M. KOUABENA ADINGRA</td>
+                    <td class="appreciation-col appreciation-assezbien">Assez Bien</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Techno De Spécialité</td>
+                    <td class="moy-col">11</td>
+                    <td class="coef-col">1</td>
+                    <td class="mcoef-col">11</td>
+                    <td class="rang-col">38ex</td>
+                    <td>M. KOUABENA ADINGRA</td>
+                    <td class="appreciation-col appreciation-passable">Passable</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Électricité</td>
+                    <td class="moy-col">12.5</td>
+                    <td class="coef-col">2</td>
+                    <td class="mcoef-col">25</td>
+                    <td class="rang-col">34ème</td>
+                    <td>M. KOUABENA ADINGRA</td>
+                    <td class="appreciation-col appreciation-assezbien">Assez Bien</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Technologie Générale</td>
+                    <td class="moy-col">2</td>
+                    <td class="coef-col">2</td>
+                    <td class="mcoef-col">4</td>
+                    <td class="rang-col">30ex</td>
+                    <td>M. COULIBALI SIENTA NRALOHO</td>
+                    <td class="appreciation-col appreciation-tresfaible">Très Faible</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Électronique</td>
+                    <td class="moy-col">12.5</td>
+                    <td class="coef-col">2</td>
+                    <td class="mcoef-col">25</td>
+                    <td class="rang-col">37ème</td>
+                    <td>M. KOUABENA ADINGRA</td>
+                    <td class="appreciation-col appreciation-assezbien">Assez Bien</td>
+                </tr>
+                <tr>
+                    <td class="matiere-col">Informatique</td>
+                    <td class="moy-col">11</td>
+                    <td class="coef-col">1</td>
+                    <td class="mcoef-col">11</td>
+                    <td class="rang-col">25ex</td>
+                    <td>M. NINDIN KESSE</td>
+                    <td class="appreciation-col appreciation-passable">Passable</td>
+                </tr>
+                <tr class="section-row">
+                    <td>UNITÉ ENSEIGNEMENT PROFESSIONNEL</td>
+                    <td>11.44</td>
+                    <td>18</td>
+                    <td>206</td>
+                    <td>36ème</td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr class="totaux-row">
+                    <td><strong>TOTAUX</strong></td>
+                    <td></td>
+                    <td><strong>32</strong></td>
+                    <td><strong>342.01</strong></td>
+                    <td colspan="2" style="text-align: center;"><strong>MOY. SEM.: 10.69/20</strong></td>
+                    <td style="text-align: center;"><strong>RANG: 33ème/52</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Section inférieure -->
+        <div class="bottom-section">
+            <div class="absences-bar">
+                <div><strong>Absences justifiées:</strong> 0 Heure(s)</div>
+                <div><strong>Absences non justifiées:</strong> 0 Heure(s)</div>
+                <div><strong>Appréciations:</strong></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-title">Statistiques Classe</div>
+                    <div class="stat-content">
+                        <div><strong>Plus forte moyenne:</strong> 14.87/20</div>
+                        <div><strong>Plus faible Moyenne:</strong> 0.04/20</div>
+                        <div><strong>Moyenne Classe:</strong> 9.74/20</div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">Distinctions</div>
+                    <div class="stat-content">
+                        <div><span class="checkbox"></span> Tableau d'honneur</div>
+                        <div><span class="checkbox"></span> Tableau d'honneur + Encouragement</div>
+                        <div><span class="checkbox"></span> Tableau d'honneur + Félicitations</div>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">Sanctions</div>
+                    <div class="stat-content">
+                        <div><span class="checkbox checked"></span> Avertissement pour travail insuffisant</div>
+                        <div><span class="checkbox"></span> Blâme pour travail insuffisant</div>
+                        <div><span class="checkbox"></span> Avertissement absences</div>
+                        <div><span class="checkbox"></span> Blâme absences</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="conseil-box">
+                <div class="conseil-title">Appréciations du Conseil de Classe</div>
+                <div class="conseil-text">
+                    Travail Passable, mais est capable de mieux faire!
+                </div>
+                <div class="signatures">
+                    <div class="signature-block">
+                        Le Professeur Principal:<br>
+                        <strong>KOUABENA ADINGRA</strong>
+                    </div>
+                    <div class="signature-block">
+                        <strong>VISA DU CHEF D'ÉTABLISSEMENT</strong>
+                        <div class="visa-box">
+                            SAN-PEDRO, le 20/02/2024
+                        </div>
+                        <strong>FOFANA NEE CISSE MABINTOU</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pied de page -->
+        <div class="footer">
+            <strong>LYCÉE PROFESSIONNEL DE SAN-PEDRO</strong><br>
+            Adresse: 05054377 San-Pédro, Côte d'Ivoire - 01BP'3774 SAN PEDRO 01 SAN-PEDRO / SAN-PEDRO / CÔTE D'IVOIRE<br>
+            Téléphone: +225 07 08 24 62 38 | E-mail: cifasanpedro@yahoo.fr<br>
+            Imprimé le mardi 20 février 2024
+        </div>
+    </div>
+</body>
+</html>

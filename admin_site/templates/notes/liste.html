@@ -8,33 +8,54 @@ note
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Notes</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
 </div>
 
-<!-- Content Row -->
-<div class="row">
-    <!-- Earnings (Monthly) Card Example -->
-    {% for classe in classes %}
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xl font-weight-bold text-primary text-uppercase mb-1">
-                           <a href="{% url 'add_note' classe.id %}">{{classe}}</a>
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{classe.eleve}} eleves</div>
-                    </div>
-                </div>
-            </div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Liste des salles de classes</h6>
+    </div>
+    <div class="card-body">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <strong>{{ message }}</strong>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            {% for field, errors in form.errors.items %}
+            <strong>{{ field }} :</strong> {{ errors|join:", " }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Libelle</th>
+                        <th>Code</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for classe in classes %}
+                    <tr>
+                        <td>{{classe.libelle}}</td>
+                        <td>{{classe.code}}</td>
+
+                        <td>
+                            <a href="{% url 'add_note' classe.id %}" class="btn btn-primary"><i class="fa fa-pen"></i> Remplire les notes</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    
-    {% endfor %}
-
 </div>
-<!-- Content Row -->
+
 
 
 {% endblock %}

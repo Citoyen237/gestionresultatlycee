@@ -14,7 +14,7 @@ urlpatterns = [
     path('enseignants/', ListEnseignant.as_view(), name='list_enseignant'),
     path('enseignants/ajouter-un-enseignant/', create_teacher, name="create_enseignant"),
 
-    path('notes/', get_note, name='liste_note'),
+    path('notes/', get_note, name='list_note'),
     path('notes/<int:classe_id>/remplissage', add_note, name='add_note'),
     path('notes/liste/', get_liste_note, name="liste_note"),
 ]

@@ -14,7 +14,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 @login_required
 def index(request):
-   return render (request, 'dashboard.html')
+   context={
+       'eleve':Eleve.objects.count(),
+       'enseignant':Enseignant.objects.count(),
+   }
+   return render (request, 'dashboard.html', context)
 
 # gestion des classes
 @login_required
@@ -138,8 +142,8 @@ def add_note(request, classe_id):
         matiere_id = request.POST.get("matiere")
         sequence = request.POST.get("sequence")
 
-        # Créer l'évaluation
-        evaluation = Evaluation.objects.create(
+        # Vérifier si une évaluation existe déjà
+        evaluation, created = Evaluation.objects.get_or_create(
             matiere_id=matiere_id,
             classe=classe,
             type_evaluation=sequence
@@ -149,13 +153,14 @@ def add_note(request, classe_id):
         for eleve in eleves:
             note_val = request.POST.get(f"note_{eleve.id}")
             if note_val:
-                Note.objects.create(
+                # Mettre à jour si la note existe déjà, sinon créer
+                Note.objects.update_or_create(
                     evaluation=evaluation,
                     eleve=eleve,
-                    note=note_val
+                    defaults={"note": note_val}
                 )
 
-        messages.success(request, "Les notes ont ete enregistrer avec succès !")
+        return redirect('liste_note')
 
     return render(request, "notes/ajouter_note.html", {
         "classe": classe,
@@ -186,7 +191,7 @@ def get_liste_note(request):
                 notes_dict = {n.eleve_id: n.note for n in evaluation.notes.all()}
 
                 for eleve in eleves:
-                    notes_par_eleve[eleve.id] = notes_dict.get(eleve.id, "-")
+                    eleve.note = notes_dict.get(eleve.id, "-")
 
     context = {
         "classe": classe,
@@ -194,6 +199,8 @@ def get_liste_note(request):
         "sequence": sequence,
         "eleves": eleves,
         "notes_par_eleve": notes_par_eleve,
+        "matieres":Matiere.objects.all(),
+        'evaluation':evaluation
     }
 
     return render(request, "notes/notes_eleves.html", context)

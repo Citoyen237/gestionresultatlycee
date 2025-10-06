@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
-{% block 'title' %}
-dashboard
+
+{% block "title" %}
+bulletins
 {% endblock %}
 
 {% block 'content' %}
-
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    <h1 class="h3 mb-0 text-gray-800">Bulletin</h1>
     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+            class="fas fa-download fa-sm text-white-50"></i> Telecharger</a>
 </div>
 
 <!-- Content Row -->
@@ -93,53 +93,56 @@ dashboard
 </div>
 <!-- Content Row -->
 
-<div class="row">
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Liste des salles de classes</h6>
+    </div>
+    <div class="card-body">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <strong>{{ message }}</strong>
+        </div>
+        {% endfor %}
+        {% endif %}
 
-    <!-- Area Chart -->
-    <div class="col-xl-12 col-lg-12">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Pourcentage de reussite pas classe</h6>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Classe</th>
-                                <th>Nombre d'eleve</th>
-                                <th>Moyenne generale</th>
-                                <th>Pourcentage de reussite(%)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>Edinburgh</td>
-                                <td>Edinburgh</td>
-                            </tr>
-                            <tr>
-                                <td>Garrett Winters</td>
-                                <td>Accountant</td>
-                                <td>Tokyo</td>
-                                <td>Edinburgh</td>
-                            </tr>
-                            <tr>
-                                <td>Ashton Cox</td>
-                                <td>Junior Technical Author</td>
-                                <td>San Francisco</td>
-                                <td>Edinburgh</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            {% for field, errors in form.errors.items %}
+            <strong>{{ field }} :</strong> {{ errors|join:", " }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Classe</th>
+                        <th>Nombre des eleves</th>
+                        <th>Moyenne</th>
+                        <th>Rang</th>
+                        <th>Pourcentage de reussite</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for classe in classes %}
+                    <tr>
+                        <td>{{classe}}</td>
+                        <td></td>
+                        <td>{{classe.libelle}}</td>
+                        <td>{{classe.code}}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'moyenne_eleve' classe.id %}" class="btn btn-info"><i class="fa fa-eye"></i> voir plus</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
 
 {% endblock %}

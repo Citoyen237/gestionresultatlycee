@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'admin_site',
-    'auth_app'
+    'auth_app',
+    'bulletin'
 ]
 
 MIDDLEWARE = [

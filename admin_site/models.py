@@ -6,6 +6,9 @@ class Classe(models.Model):
     libelle = models.CharField(max_length=255)
     code = models.CharField(max_length=255, unique=True)  
 
+    class Meta:
+        unique_together = ('libelle', 'code')
+
     @property
     def eleve(self):
         return self.eleves.count()
@@ -57,6 +60,12 @@ class Evaluation(models.Model):
         ("2", "Sequence 2"),
     ])
     date = models.DateField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('classe', 'matiere', 'type_evaluation')
+    
+    def __str__(self):
+        return f'sequence {self.type_evaluation}/{self.matiere}/{self.classe}'
     
 class Note(models.Model):
     evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE, related_name="notes")
