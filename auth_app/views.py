@@ -15,11 +15,12 @@ def connexion(request):
            try:
                 user = UserModel.objects.get(matricule=matricule)
                 if user.check_password(password):
-                    if not user.is_active:
-                        messages.error(request, "Votre compte est bloqué. Veuillez contacter l'administration.")
+                    if user.role == 'enseignant':
+                       login(request,user)
+                       return redirect('list_note')
                     else:
                         login(request,user)
-                        return redirect('index')  # Remplacez 'home' par le nom de l'URL de votre page d'accueil
+                        return redirect('bulletin')  # Remplacez 'home' par le nom de l'URL de votre page d'accueil
                 else:  
                     messages.error(request, 'matricule ou mot de passe incorrect.')
            except UserModel.DoesNotExist:

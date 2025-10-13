@@ -25,6 +25,12 @@ class EleveRegisterForm(forms.ModelForm):
         label="Nom du père",
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
+
+    lieu_naissance = forms.CharField(
+        label="Lieu de naissance",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
     nom_mere = forms.CharField(
         label="Nom de la mère",
         widget=forms.TextInput(attrs={'class': 'form-control'})
@@ -46,6 +52,18 @@ class EleveRegisterForm(forms.ModelForm):
         label="Classe",
         widget=forms.Select(attrs={'class': 'form-control'})
     )
+
+    sexe = forms.CharField(
+    label="Sexe",
+    widget=forms.Select(
+        choices=[
+            ('', 'Sélectionner'),  # Option vide par défaut
+            ('Masculin', 'Masculin'),
+            ('Féminin', 'Féminin'),
+        ],
+        attrs={'class': 'form-control'}
+    )
+)
 
     class Meta:
         model = CustomUser
@@ -90,7 +108,10 @@ class EleveRegisterForm(forms.ModelForm):
                 nom_mere=self.cleaned_data["nom_mere"],
                 email_parent=self.cleaned_data["email_parent"],
                 phone_parent=self.cleaned_data["phone_parent"],
+                lieu_naissance=self.cleaned_data["lieu_naissance"],
+                sexe=self.cleaned_data["sexe"],
                 password=password,
+
             )
         return user, matricule, password
 
@@ -103,6 +124,17 @@ class TeacherRegisterForm(forms.ModelForm):
         label="Discipline",
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
+    sexe = forms.CharField(
+    label="Sexe",
+    widget=forms.Select(
+        choices=[
+            ('', 'Sélectionner'),  # Option vide par défaut
+            ('Masculin', 'Masculin'),
+            ('Féminin', 'Féminin'),
+        ],
+        attrs={'class': 'form-control'}
+    )
+)
     phone_number = forms.CharField(
         label="Téléphone du parent",
         widget=forms.TextInput(attrs={'class': 'form-control'})
@@ -151,6 +183,7 @@ class TeacherRegisterForm(forms.ModelForm):
                 grade=self.cleaned_data["grade"],
                 matiere=self.cleaned_data["matiere"],
                 phone_number=self.cleaned_data["phone_number"],
+                sexe=self.cleaned_data["sexe"],
                 password=password,
             )
         return user, matricule, password

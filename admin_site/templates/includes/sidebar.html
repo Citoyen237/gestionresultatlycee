@@ -1,9 +1,9 @@
-{% load  static %}
+{% load static %}
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'index' %}">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'bulletin' %}">
         <div class="sidebar-brand-icon">
             <i class="fas fa-university"></i>
         </div>
@@ -13,18 +13,26 @@
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'index' %}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            Dashboard</a>
-    </li>
+    {% if user.role == 'enseignant' %}
 
-    <!-- Nav Item - Dashboard -->
     <li class="nav-item">
+        <a class="nav-link" href="{% url 'list_note' %}">
+            <i class="fas fa-fw fa-chart-area"></i>
+            Notes</a>
+    </li>
+    <!-- Nav Item - Charts -->
+    <li class="nav-item">
+        <a class="dropdown-item" href="{% url 'logout' %}">
+            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+            Deconnexion
+        </a>
+    </li>
+    {% else %}
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active" active>
         <a class="nav-link" href="{% url 'bulletin' %}">
             <i class="fas fa-scroll"></i>
-            Bulletins</a>
+            Statistiques</a>
     </li>
 
     <!-- Divider -->
@@ -64,11 +72,12 @@
 
     <!-- Nav Item - Charts -->
     <li class="nav-item">
-       <a class="dropdown-item" href="{% url 'logout' %}">
-                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Deconnexion
-                    </a>
+        <a class="dropdown-item" href="{% url 'logout' %}">
+            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+            Deconnexion
+        </a>
     </li>
+    {% endif %}
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

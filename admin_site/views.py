@@ -8,6 +8,31 @@ from .models import *
 from .form import *
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
+
+def send_custom_email(subject, template_name, context, recipient_list):
+    """
+    Envoie un email personnalisé.
+
+    :param subject: Sujet de l'email
+    :param template_name: Nom du fichier de template HTML pour l'email
+    :param context: Contexte pour rendre le template
+    :param recipient_list: Liste des destinataires de l'email
+    """
+    html_message = render_to_string(template_name, context)
+    plain_message = strip_tags(html_message)
+    from_email = 'prodistributionltd237@gmail.com'
+    send_mail(
+        subject,
+        plain_message,
+        from_email,
+        recipient_list,
+        html_message=html_message,
+    )
 
 
 
@@ -92,7 +117,19 @@ def create_teacher(request):
     if request.method == "POST":
         form = TeacherRegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user, matricule, password = form.save()
+            template = "enseignants/mail.html"
+            objet = "Lycée bilingue de bojongo"
+            context = {
+                'user':user,
+                'password':password
+            }
+            send_custom_email(
+            objet,
+            template,
+            context,
+            [user.email]
+            )
             messages.success(request, "Enseignant enregistrer avec succès !")
             return redirect('list_enseignant')
     else:
@@ -123,9 +160,17 @@ def create_student(request):
 
 @login_required
 def get_note(request):
-
+    user=request.user
+    enseignant = Enseignant.objects.filter(user=user.id).first()
+    if user.role == 'enseignant' :
+        matieres = enseignant.enseignant_matiere.all()
+        classes = Classe.objects.filter(matiere__in=matieres).distinct()
+    else :
+        classes=Classe.objects.all()
+        
+    # Récupérer toutes les classes distinctes de cet enseignant
     context={
-        'classes':Classe.objects.all()
+        'classes':classes
     }
     return render(request, "notes/liste.html", context)
 
@@ -136,7 +181,12 @@ def add_note(request, classe_id):
     # On récupère tous les élèves de la classe liée à cette évaluation
     eleves = Eleve.objects.filter(classe=classe_id)
 
-    matieres=Matiere.objects.filter(classe=classe_id)
+    user=request.user
+    enseignant = Enseignant.objects.filter(user=user.id).first()
+    if user.role == 'enseignant' :
+        matieres=Matiere.objects.filter(classe=classe_id).filter(enseignant=enseignant.id )
+    else :
+        matieres=Matiere.objects.filter(classe=classe_id)
 
     if request.method == "POST":
         matiere_id = request.POST.get("matiere")
@@ -159,8 +209,7 @@ def add_note(request, classe_id):
                     eleve=eleve,
                     defaults={"note": note_val}
                 )
-
-        return redirect('liste_note')
+        messages.success(request, "Note enregistrer avec succes !")
 
     return render(request, "notes/ajouter_note.html", {
         "classe": classe,
@@ -199,7 +248,7 @@ def get_liste_note(request):
         "sequence": sequence,
         "eleves": eleves,
         "notes_par_eleve": notes_par_eleve,
-        "matieres":Matiere.objects.all(),
+        "matieres":Matiere.objects.filter(classe=classe.id),
         'evaluation':evaluation
     }
 

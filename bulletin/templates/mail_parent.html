@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lycée bilingue de bojongo</title>
+</head>
+
+<body>
+    <h3>Salut M./Mme {{ eleve.nom_pere }}</h3>
+    <br>
+    <p>Resultats disponible</p>
+    <br>
+    <p>Votre votre enfant</p>
+    <br>
+    <p>Nom et Prenom : <b>{{eleve}}</b></p>
+    <p>Matricule : <b>{{eleve.user}}</b></p>
+    <p>Classe : <b>{{eleve.classe}}</b></p>
+    <br>
+    <p><u>Resultats</u></p>
+    <p>Moyenne : <b>{{eleve.moyenne}}/20</b></p>
+    <p>Rang : <b>{{eleve.rang}}/{{eleve.classe.eleve}}</b></p>
+    <p>Mention : <b>{{eleve.mention}}</b></p>
+    <p>Appreciation : <b>{{eleve.appreciation}}</b></p>
+    <br>
+    <br>
+    <p>Cordialement,</p>
+    <p><b>Lycée bilingue de bojongo</b></p>
+</body>
+
+</html>

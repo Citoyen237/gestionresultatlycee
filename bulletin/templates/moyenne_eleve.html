@@ -8,18 +8,96 @@ bulletins
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Bulletin <b>{{classe}}</b></h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-            class="fas fa-download fa-sm text-white-50"></i> Telecharger tous les bulletins</a>
+    <button type="button" data-toggle="modal" data-target="#exampleModalCenter" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+            class="fas fa-download fa-sm text-white-50"></i> Telecharger tous les bulletins</button>
 </div>
+
+<!-- Content Row -->
+<div class="row">
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Pourcentage de reussite</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{classe.pourcentage_reussite}}%</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Requests Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Moyenne generale</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{classe.moyenne_generale}}/20</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-graduation-cap fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">1<sup>er</sup> de la classe avec {{classe.meilleur_eleve.moyenne}}/20
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{classe.meilleur_eleve.eleve}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user-graduate fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Effectif des eleves</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{classe.eleve}} élèves</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+<!-- Content Row -->
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Moyenne generale : <b>{{classe}}</b></h6>
-    <h6 class="m-0 font-weight-bold text-primary">Rang: <b>{{classe}}</b></h6>
-    <h6 class="m-0 font-weight-bold text-primary">Pourcentage de reussite : <b>{{classe}}</b></h6>
-    <h6 class="m-0 font-weight-bold text-primary">Nombre d'eleve : <b>{{classe}}</b></h6>
-        <h6 class="m-0 font-weight-bold text-primary"></h6>
     </div>
     <div class="card-body">
         {% if messages %}
@@ -44,11 +122,11 @@ bulletins
                 <tbody>
                     {% for eleve in eleves %}
                     <tr>
-                        <td>{{eleve.matricule}}</td>
+                        <td>{{eleve.user.matricule}}</td>
                         <td>{{eleve.user.last_name}},{{eleve.user.first_name}}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{eleve.moyenne}}</td>
+                        <td>{{eleve.rang}}</td>
+                        <td>{{eleve.mention}}</td>
                         <td>
                             <a href="{% url 'download_bul_student' eleve.id %}" class="btn btn-info"><i class="fas fa-download"></i></a>
                         </td>

@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 
 {% block "title" %}
-bulletins
+statistiques
 {% endblock %}
 
 {% block 'content' %}
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Bulletin</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-            class="fas fa-download fa-sm text-white-50"></i> Telecharger</a>
+    <h1 class="h3 mb-0 text-gray-800">Statistiques</h1>
 </div>
 
 <!-- Content Row -->
@@ -23,7 +21,7 @@ bulletins
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Pourcentage de reussite</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{pourcentage}}%</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -41,7 +39,7 @@ bulletins
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Moyenne generale</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{moyenne_generale}}/20</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-graduation-cap fa-2x text-gray-300"></i>
@@ -58,8 +56,8 @@ bulletins
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Nombre d'eleves</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{eleve}}</div>
+                            1 <sup>er</sup>du Lycee > {{meilleur_eleve.user.get_full_name}}</div>
+                        <div class="h6 mb-0 font-weight-bold text-gray-800">{{meilleur_eleve.classe}}-{{meilleur_eleve.moyenne}}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-user-graduate fa-2x text-gray-300"></i>
@@ -75,11 +73,11 @@ bulletins
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Nombre d'enseignants
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Effectif des eleves
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{enseignant}}</div>
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{eleve}} élèves</div>
                             </div>
                         </div>
                     </div>
@@ -119,7 +117,7 @@ bulletins
                 <thead>
                     <tr>
                         <th>Classe</th>
-                        <th>Nombre des eleves</th>
+                        <th>Effectif</th>
                         <th>Moyenne</th>
                         <th>Rang</th>
                         <th>Pourcentage de reussite</th>
@@ -130,10 +128,10 @@ bulletins
                     {% for classe in classes %}
                     <tr>
                         <td>{{classe}}</td>
-                        <td></td>
-                        <td>{{classe.libelle}}</td>
-                        <td>{{classe.code}}</td>
-                        <td></td>
+                        <td>{{classe.eleve}}</td>
+                        <td>{{classe.moyenne_generale}}/20</td>
+                        <td>{{classe.rang}}</td>
+                        <td>{{classe.pourcentage_reussite}}%</td>
                         <td>
                             <a href="{% url 'moyenne_eleve' classe.id %}" class="btn btn-info"><i class="fa fa-eye"></i> voir plus</a>
                         </td>
